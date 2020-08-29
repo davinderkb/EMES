@@ -2,13 +2,18 @@
 import 'package:emes/util/utility.dart';
 
 class UserData{
-  String _id, _name, _firstName, _lastName, _email, _gender, _profileImage;
+  String _id,
+      _companyId,
+      _name,
+      _firstName,
+      _lastName,
+      _email,
+      _profileImage;
+
+  get companyId => _companyId;
+  bool isManager;
 
   get firstName => _firstName;
-
-
-
-  String get gender => _gender;
 
   get profileImage => _profileImage;
 
@@ -17,18 +22,22 @@ class UserData{
   String get name => _name;
 
 
-  UserData(this._id, this._name, this._firstName, this._lastName,this._email,String gender, this._profileImage){
-    if(gender == null){
-      gender = "Male";
-    }
-    this._gender = Utility.capitalize(gender);
+  UserData(this._id, this._companyId,this._name, this._firstName, this._lastName,this._email, this._profileImage, this.isManager){
+
   }
 
 
 
 
   factory UserData.fromJson(dynamic json) {
-    return UserData(json['ID'] as String,json['display_name'] as String, json['first_name'] as String,json['last_name'] as String,json['user_email'],json['gender'] as String, json["profile_image"] as String);
+    return UserData(json['id'] as String,
+        json['company_id'] as String,
+        json['name'] as String,
+        json['first_name'] as String,
+        json['last_name'] as String,
+        json['email'],
+        json["image"] as String,
+        json["is_manager"] == "0" ? false : true);
   }
 
   get email => _email;

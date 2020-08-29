@@ -14,7 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'homepage.dart';
 
 class LoginPage extends StatefulWidget {
-
   @override
   LoginPageState createState() {
     return LoginPageState();
@@ -240,15 +239,14 @@ class LoginPageState extends State<LoginPage>{
   }
 
   Future<void> getCompanyUrl(BuildContext context) async {
+    FormData formData = new FormData.fromMap({
+      "companyID": companyIdController.text.trim(),
+    });
     setState(() {
       _isLoading = true;
     });
     var dio = Dio();
-
     var getCompanyUrl = 'http://emesau.com/api/get_info';
-    FormData formData = new FormData.fromMap({
-      "companyID": companyIdController.text.trim(),
-    });
     dynamic response;
     try{
       response = await dio.post(getCompanyUrl, data: formData);
@@ -262,8 +260,7 @@ class LoginPageState extends State<LoginPage>{
         response = await dio.post(companyUrl+ '/api/login', data: formData);
         if(response.statusCode==200){
           dynamic responseList = jsonDecode(response.toString());
-          //UserData user = UserData.fromJson(responseList["output"]);
-          //await saveUserDetailsInSharedPref(user);
+          UserData user = UserData.fromJson(responseList["output"]);
           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => HomePage()));
         }
       } else {
@@ -279,18 +276,5 @@ class LoginPageState extends State<LoginPage>{
       });
     }
 
-  }
-
-  Future saveUserDetailsInSharedPref(UserData user) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool(Constants.SHARED_PREF_IS_LOGGED_IN, true);
-    prefs.setString(Constants.SHARED_PREF_USER_NAME, userNameController.text.trim());
-    prefs.setString(Constants.SHARED_PREF_PASSWORD, passwordController.text);
-    prefs.setString(Constants.SHARED_PREF_GENDER, user.gender);
-    prefs.setString(Constants.SHARED_PREF_PROFILE_IMAGE, user.profileImage);
-    prefs.setString(Constants.SHARED_PREF_NAME, user.name);
-    prefs.setString(Constants.SHARED_PREF_USER_FIRST_NAME, user.firstName);
-    prefs.setString(Constants.SHARED_PREF_USER_LAST_NAME, user.lastName);
-    prefs.setString(Constants.SHARED_PREF_USER_ID, user.id);
   }
 }
